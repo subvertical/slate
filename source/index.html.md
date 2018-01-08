@@ -4,12 +4,10 @@ title: API Reference
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
   - ruby
-  - python
-  - javascript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
+  - <a href='https://app.verticalchange.com/signup'>Sign Up for an Account</a>
+  # - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
 
 includes:
   - errors
@@ -19,221 +17,195 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the VerticalChange API! You can use our API to access various API endpoints, to interact with your data.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+<!-- Base URL: [https://api.verticalchange.com](https://api.verticalchange.com) -->
 
 # Authentication
 
-> To authorize, use this code:
+VerticalChange uses API authentication tokens to allow access to the API. You can retrieve an authentication token by calling the `/sessions` API endpoint.
 
-```ruby
-require 'kittn'
+VerticalChange API server expects the API authentication token to be included in all API requests to the server in a header that looks like the following:
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+`Authorization: API_AUTH_TOKEN`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>API_AUTH_TOKEN</code> with your personal API authentication token.
 </aside>
 
-# Kittens
-
-## Get All Kittens
+## Get Authentication Token
 
 ```ruby
-require 'kittn'
+require 'rest-client'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+user = { email: 'email@example.com', password: 'password' }
+headers = { Accept: 'application/vnd.verticalchange.v1' }
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
+RestClient.post 'https://api.verticalchange.com/sessions', user, headers
 ```
 
 ```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+curl --request POST \
+  --url https://api.verticalchange.com/sessions \
+  --header 'Accept: application/vnd.verticalchange.v1' \
+  --form email=email@example.com \
+  --form password=password
 ```
 
-```javascript
-const kittn = require('kittn');
+> The above command returns JSON structured like this:
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+```json
+{
+    "auth_token": "227c9de96736..."
+}
+```
+
+This endpoint retrieves the authentication token.
+
+### HTTP Request
+
+`POST https://api.verticalchange.com/sessions`
+
+### Parameters
+
+Parameter | Description
+--------- | -----------
+email | Your email address
+password | Your password
+
+## Delete Authentication Token
+
+```ruby
+require 'rest-client'
+
+headers = { Accept: 'application/vnd.verticalchange.v1' }
+
+RestClient.delete 'https://api.verticalchange.com/sessions/API_AUTH_TOKEN', headers
+```
+
+```shell
+curl --request DELETE \
+  --url https://api.verticalchange.com/sessions/<API_AUTH_TOKEN> \
+  --header 'Accept: application/vnd.verticalchange.v1' \
+```
+
+> The above command returns no content.
+
+This endpoint deletes the authentication token.
+
+### HTTP Request
+
+`DELETE https://api.verticalchange.com/sessions/<API_AUTH_TOKEN>`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+API_AUTH_TOKEN | The authentication token.
+
+# Reports
+
+## Get All Reports
+
+```ruby
+require 'rest-client'
+
+headers = {
+  Authorization: 'API_AUTH_TOKEN',
+  Accept: 'application/vnd.verticalchange.v1'
+}
+
+RestClient.get 'https://api.verticalchange.com/reports', headers
+```
+
+```shell
+curl --url https://api.verticalchange.com/reports \
+  --header 'Accept: application/vnd.verticalchange.v1' \
+  --header 'Authorization: API_AUTH_TOKEN'
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 [
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
+  {...}
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves all reports.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET https://api.verticalchange.com/reports`
+
+<aside class="success">
+Remember — authentication is required.
+</aside>
+
+## Get a Specific Report
+
+```ruby
+require 'rest-client'
+
+headers = {
+  Authorization: 'API_AUTH_TOKEN',
+  Accept: 'application/vnd.verticalchange.v1'
+}
+
+RestClient.get 'https://api.verticalchange.com/reports', { id: 55 }, headers
+```
+
+```shell
+curl --url https://api.verticalchange.com/reports/55 \
+  --header 'Accept: application/vnd.verticalchange.v1' \
+  --header 'Authorization: API_AUTH_TOKEN'
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "id": 55,
+  ...
+}
+```
+
+This endpoint retrieves a specific report.
+
+<!-- <aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside> -->
+
+### HTTP Request
+
+`GET https://api.verticalchange.com/reports/<ID>`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+ID | The ID of the report to retrieve
 
 ### Query Parameters
 
 Parameter | Default | Description
 --------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+name | Report | Report name
+worksheet | details | ...
+contact_type | Person | Person, Group, and ProgramContact...
+require_form_result | true | Require form result
+include_participants | false | Include participants in the response
+report_fields | | Report fields...
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+# Headers
+
+VerticalChange API requires two headers—for versioning and authorization purposes—to be presents in all API calls.
+
+### Required Headers
+
+Parameter | Value | Purpose
+--------- | ----------- | -----------
+Accept | `application/vnd.verticalchange.v1` | To set the versioning.
+Authorization | `API_AUTH_TOKEN` | To authenticate API calls.
+
+<aside class="notice">
+You must replace <code>API_AUTH_TOKEN</code> with your personal API authentication token.
 </aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
