@@ -189,11 +189,11 @@ ID | The ID of the report to retrieve
 Parameter | Default | Description
 --------- | ------- | -----------
 name | Report | Report name
-worksheet | details | ...
-contact_type | Person | Person, Group, and ProgramContact...
+report_fields | All fields | All Report fields.
 require_form_result | true | Require form result
+contact_type | Person | Person, Group, and ProgramContact.
 include_participants | false | Include participants in the response
-report_fields | | Report fields...
+worksheet | details | [TBD]
 
 # Headers
 
