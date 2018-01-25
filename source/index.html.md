@@ -152,7 +152,7 @@ headers = {
   Accept: 'application/vnd.verticalchange.v1'
 }
 
-RestClient.get 'https://api.verticalchange.com/reports', { id: 55 }, headers
+RestClient.get 'https://api.verticalchange.com/reports/55', headers
 ```
 
 ```shell
